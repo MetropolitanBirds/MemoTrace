@@ -32,13 +32,13 @@ jobs:
         run: python -c "import memotrace_version as v;print(v.__version__)"
 
       - name: Build PyInstaller
-        run: python build_scripts/pack_memotrace.py --mode 1 --yes --no-input
+        run: python build.py --mode 1 --yes --no-input
 
       - name: Build Nuitka
-        run: python build_scripts/pack_memotrace.py --mode 2 --yes --no-input
+        run: python build.py --mode 2 --yes --no-input
 
       - name: Build cx_Freeze
-        run: python build_scripts/pack_memotrace.py --mode 3 --yes --no-input
+        run: python build.py --mode 3 --yes --no-input
 
       - name: Generate CHANGELOG section
         run: |

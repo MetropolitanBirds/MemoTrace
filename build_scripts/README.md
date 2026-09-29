@@ -30,10 +30,25 @@ python --version
 # 2. 进入项目目录
 cd MemoTrace
 
-# 3. 运行主打包脚本
-python build_scripts/pack_memotrace.py
+# 3. 运行项目根目录的打包入口（可在任意目录执行）
+python build.py
 
 # 4. 选择打包方式（1-4）
+```
+
+> ⚠️ **入口只有一个：项目根目录的 `build.py`。**
+> `build_scripts/` 内的脚本使用 `from build_scripts.xxx import ...` 这类包内绝对导入，
+> 因此**必须由项目根目录下的脚本启动**——根目录是 `sys.path[0]`，包才能被解析。
+>
+> 请勿使用 `python build_scripts/pack_memotrace.py`（会报 `ModuleNotFoundError: No module named 'build_scripts'`），
+> 也不要 `cd build_scripts` 后再执行。
+>
+> 等价写法（须在项目根目录执行，无需 `build.py`）：`python -m build_scripts.pack_memotrace`
+
+非交互 / CI 用法：
+
+```bash
+python build.py --mode 1 --yes --no-input   # 1=PyInstaller 2=Nuitka 3=cx_Freeze 4=全部
 ```
 
 ## 📊 打包方式对比
@@ -85,9 +100,9 @@ python -c "import psutil, win32api; print('依赖检查通过')"
 ### 打包脚本说明
 
 #### 1. 主打包脚本
-- **文件**: `build_scripts/pack_memotrace.py`
+- **文件**: `build_scripts/pack_memotrace.py`（对外入口是项目根目录的 `build.py`）
 - **功能**: 交互式选择打包方式，自动处理常见问题
-- **使用**: `python build_scripts/pack_memotrace.py`
+- **使用**: `python build.py`（在项目根目录，或任意目录用 `build.py` 的绝对路径）
 
 #### 2. PyInstaller打包
 - **文件**: `build_scripts/build_exe.py`  

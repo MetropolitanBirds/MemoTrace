@@ -87,104 +87,104 @@ class MemoTraceCxFreezePacker:
         """创建cx_Freeze setup文件"""
         print("\n【步骤4】创建cx_Freeze配置文件...")
         
-    icon_path = ensure_icon(self.root_dir)
-    version_file = create_version_file(self.root_dir)
-    setup_content = f'''#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import sys
-from cx_Freeze import setup, Executable
-from pathlib import Path
-
-# 项目根目录
-root_dir = Path(r"{self.root_dir}")
-
-# 包含的文件和目录
-include_files = [
-    (str(root_dir / "exporter" / "resources"), "exporter/resources"),
-    (str(root_dir / "exporter" / "ffmpeg.exe"), "exporter/ffmpeg.exe"),
-    (str(root_dir / "wxManager" / "decrypt" / "version_list.json"), "wxManager/decrypt/version_list.json"),
-]
-
-# 添加emoji表情包目录（如果存在）
-emoji_dir = root_dir / "exporter" / "resources" / "emoji"
-if emoji_dir.exists():
-    include_files.append((str(emoji_dir), "exporter/resources/emoji"))
-
-# 包含的包
-packages = [
-    "multiprocessing",
-    "PIL",
-    "win32api",
-    "win32con",
-    "win32gui", 
-    "win32process",
-    "win32file",
-    "pywintypes",
-    "psutil",
-    "yara",
-    "pymem",
-    "lxml",
-    "bs4",
-    "openpyxl",
-    "cryptography",
-    "Crypto",
-    "requests",
-    "dateparser",
-    "xmltodict",
-    "aiofiles",
-    "typing_extensions",
-    "json",
-    "sqlite3",
-    "xml",
-    "html",
-    "urllib",
-    "http",
-    "email",
-    "encodings",
-]
-
-# 排除的模块
-excludes = [
-    "tkinter",
-    "unittest",
-    "test",
-    "distutils",
-]
-
-# 构建选项
-build_exe_options = {{
-    "packages": packages,
-    "excludes": excludes,
-    "include_files": include_files,
-    "build_exe": str(Path(r"{self.dist_dir}") / "MemoTrace"),
-    "optimize": 2,
-    "include_msvcrt": True,
-}}
-
-# 可执行文件配置
-executables = [
-    Executable(
-        r"{self.main_script}",
-        base="Win32GUI" if sys.platform == "win32" else None,  # 隐藏控制台窗口
-        target_name="MemoTrace.exe",
-        icon=r"{icon_path}",
+        icon_path = ensure_icon(self.root_dir)
+        version_file = create_version_file(self.root_dir)
+        setup_content = f'''#!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+    
+    import sys
+    from cx_Freeze import setup, Executable
+    from pathlib import Path
+    
+    # 项目根目录
+    root_dir = Path(r"{self.root_dir}")
+    
+    # 包含的文件和目录
+    include_files = [
+        (str(root_dir / "exporter" / "resources"), "exporter/resources"),
+        (str(root_dir / "exporter" / "ffmpeg.exe"), "exporter/ffmpeg.exe"),
+        (str(root_dir / "wxManager" / "decrypt" / "version_list.json"), "wxManager/decrypt/version_list.json"),
+    ]
+    
+    # 添加emoji表情包目录（如果存在）
+    emoji_dir = root_dir / "exporter" / "resources" / "emoji"
+    if emoji_dir.exists():
+        include_files.append((str(emoji_dir), "exporter/resources/emoji"))
+    
+    # 包含的包
+    packages = [
+        "multiprocessing",
+        "PIL",
+        "win32api",
+        "win32con",
+        "win32gui", 
+        "win32process",
+        "win32file",
+        "pywintypes",
+        "psutil",
+        "yara",
+        "pymem",
+        "lxml",
+        "bs4",
+        "openpyxl",
+        "cryptography",
+        "Crypto",
+        "requests",
+        "dateparser",
+        "xmltodict",
+        "aiofiles",
+        "typing_extensions",
+        "json",
+        "sqlite3",
+        "xml",
+        "html",
+        "urllib",
+        "http",
+        "email",
+        "encodings",
+    ]
+    
+    # 排除的模块
+    excludes = [
+        "tkinter",
+        "unittest",
+        "test",
+        "distutils",
+    ]
+    
+    # 构建选项
+    build_exe_options = {{
+        "packages": packages,
+        "excludes": excludes,
+        "include_files": include_files,
+        "build_exe": str(Path(r"{self.dist_dir}") / "MemoTrace"),
+        "optimize": 2,
+        "include_msvcrt": True,
+    }}
+    
+    # 可执行文件配置
+    executables = [
+        Executable(
+            r"{self.main_script}",
+            base="Win32GUI" if sys.platform == "win32" else None,  # 隐藏控制台窗口
+            target_name="MemoTrace.exe",
+            icon=r"{icon_path}",
+        )
+    ]
+    
+    setup(
+        name="{__app_name__}",
+        version="{__version__}",
+        description="微信聊天记录解析和导出工具",
+        options={{"build_exe": build_exe_options}},
+        executables=executables
     )
-]
+    '''
 
-setup(
-    name="{__app_name__}",
-    version="{__version__}",
-    description="微信聊天记录解析和导出工具",
-    options={{"build_exe": build_exe_options}},
-    executables=executables
-)
-'''
-        
         setup_file = self.build_dir / "setup_cx_freeze.py"
         with open(setup_file, "w", encoding="utf-8") as f:
             f.write(setup_content)
-            
+
         self.setup_file = setup_file
         print(f"✅ Setup文件已创建: {setup_file}")
         
